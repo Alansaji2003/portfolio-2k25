@@ -3,9 +3,17 @@ import * as THREE from "three";
 
 const SpaceBackground: React.FC = () => {
   const mountRef = useRef<HTMLDivElement | null>(null);
+  const frameId = useRef<number | undefined>(undefined);
+  const isVisible = useRef(true);
 
   useEffect(() => {
-    if (!mountRef.current) return;
+    const currentMount = mountRef.current;
+    if (!currentMount) return;
+
+    // Reduce star count based on device performance
+    const isMobile = window.innerWidth < 768;
+    const isLowEnd = navigator.hardwareConcurrency <= 4;
+    const starCount = isMobile ? 500 : isLowEnd ? 800 : 1500;
 
     // === Scene Setup ===
     const scene = new THREE.Scene();
@@ -17,81 +25,143 @@ const SpaceBackground: React.FC = () => {
     );
     camera.position.z = 5;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    // Optimize renderer settings
+    const renderer = new THREE.WebGLRenderer({
+      antialias: false, // Disable for better performance
+      alpha: true,
+      powerPreference: "high-performance"
+    });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Cap pixel ratio
     renderer.setClearColor(0x000000, 0);
-    mountRef.current.appendChild(renderer.domElement);
+    currentMount.appendChild(renderer.domElement);
 
-    // === Stars ===
-    const stars: THREE.Mesh[] = [];
-    const addStar = () => {
-      const geometry = new THREE.SphereGeometry(0.3, 8, 8);
-      const material = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        transparent: true,
-        opacity: 1, // consistent initial opacity
-      });
-      const star = new THREE.Mesh(geometry, material);
-      const [x, y, z] = Array(3)
-        .fill(0)
-        .map(() => THREE.MathUtils.randFloatSpread(400));
-      star.position.set(x, y, z);
-      scene.add(star);
-      stars.push(star);
-    };
-    Array(1000).fill(0).forEach(addStar);
+    // === Optimized Stars using InstancedMesh ===
+    const starGeometry = new THREE.SphereGeometry(0.4, 8, 8); // Larger and more detailed stars
+    const starMaterial = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.9, // Make stars more opaque
 
-    // === Scroll effect ===
+    });
+
+    const instancedStars = new THREE.InstancedMesh(starGeometry, starMaterial, starCount);
+    scene.add(instancedStars);
+
+    // Star data arrays for better performance
+    const starPositions = new Float32Array(starCount * 3);
+    const starSpeeds = new Float32Array(starCount);
+    const matrix = new THREE.Matrix4();
+
+    // Initialize stars
+    for (let i = 0; i < starCount; i++) {
+      const i3 = i * 3;
+      starPositions[i3] = THREE.MathUtils.randFloatSpread(400);
+      starPositions[i3 + 1] = THREE.MathUtils.randFloatSpread(400);
+      starPositions[i3 + 2] = THREE.MathUtils.randFloat(-200, 10);
+      starSpeeds[i] = 0.2 + Math.random() * 0.3;
+
+      matrix.setPosition(starPositions[i3], starPositions[i3 + 1], starPositions[i3 + 2]);
+      instancedStars.setMatrixAt(i, matrix);
+    }
+    instancedStars.instanceMatrix.needsUpdate = true;
+
+    // === Scroll effect with throttling ===
     let scrollY = 0;
-    const handleScroll = () => {
+    let ticking = false;
+
+    const updateScroll = () => {
       scrollY = window.scrollY;
+      ticking = false;
     };
-    window.addEventListener("scroll", handleScroll);
 
-    // === Animation Loop ===
-    const animate = () => {
-      requestAnimationFrame(animate);
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(updateScroll);
+        ticking = true;
+      }
+    };
 
-      stars.forEach((star) => {
-        star.position.z += 0.2 + scrollY * 0.0005;
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
-        // Fade stars based on distance
-        const material = star.material as THREE.MeshBasicMaterial;
-        const fadeStart = -200;
-        const fadeEnd = 10;
+    // === Visibility API for performance ===
+    const handleVisibilityChange = () => {
+      isVisible.current = !document.hidden;
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
-        // Stars start faded and become bright as they approach
-        const opacity = (star.position.z - fadeStart) / (fadeEnd - fadeStart);
-        material.opacity = THREE.MathUtils.clamp(opacity, 0, 1);
+    // === Optimized Animation Loop ===
+    let lastTime = 0;
+    const targetFPS = 60;
+    const frameInterval = 1000 / targetFPS;
 
-        // Recycle star smoothly behind when it goes too far
-        if (star.position.z > fadeEnd) {
-          star.position.z = fadeStart;
-          star.position.x = THREE.MathUtils.randFloatSpread(400);
-          star.position.y = THREE.MathUtils.randFloatSpread(400);
+    const animate = (currentTime: number) => {
+      if (!isVisible.current) {
+        frameId.current = requestAnimationFrame(animate);
+        return;
+      }
+
+      const deltaTime = currentTime - lastTime;
+
+      if (deltaTime >= frameInterval) {
+        const scrollMultiplier = scrollY * 0.0008;
+
+        // Update star positions in batches
+        for (let i = 0; i < starCount; i++) {
+          const i3 = i * 3;
+          starPositions[i3 + 2] += starSpeeds[i] + scrollMultiplier;
+
+          // Recycle stars
+          if (starPositions[i3 + 2] > 10) {
+            starPositions[i3 + 2] = -200;
+            starPositions[i3] = THREE.MathUtils.randFloatSpread(400);
+            starPositions[i3 + 1] = THREE.MathUtils.randFloatSpread(400);
+          }
+
+          // Update matrix
+          matrix.setPosition(starPositions[i3], starPositions[i3 + 1], starPositions[i3 + 2]);
+          instancedStars.setMatrixAt(i, matrix);
         }
-      });
 
-      renderer.render(scene, camera);
+        instancedStars.instanceMatrix.needsUpdate = true;
+        renderer.render(scene, camera);
+        lastTime = currentTime;
+      }
+
+      frameId.current = requestAnimationFrame(animate);
     };
-    animate();
 
-    // === Resize handler ===
+    frameId.current = requestAnimationFrame(animate);
+
+    // === Resize handler with debouncing ===
+    let resizeTimeout: number;
     const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      clearTimeout(resizeTimeout);
+      resizeTimeout = window.setTimeout(() => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }, 100);
     };
     window.addEventListener("resize", handleResize);
 
     // === Cleanup ===
     return () => {
+      if (frameId.current) {
+        cancelAnimationFrame(frameId.current);
+      }
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleResize);
-      if (mountRef.current && renderer.domElement.parentNode) {
-        mountRef.current.removeChild(renderer.domElement);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      clearTimeout(resizeTimeout);
+
+      if (currentMount && renderer.domElement.parentNode) {
+        currentMount.removeChild(renderer.domElement);
       }
+
+      // Dispose of Three.js resources
+      starGeometry.dispose();
+      starMaterial.dispose();
       renderer.dispose();
     };
   }, []);
@@ -107,10 +177,8 @@ const SpaceBackground: React.FC = () => {
         height: "100%",
         zIndex: -1,
         pointerEvents: "none",
-        backgroundImage: 'url("/bluespace.jpg")',
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
+        backgroundColor: "#000000", // Pitch black background
+        willChange: "transform", // Hint for GPU acceleration
       }}
     />
   );
