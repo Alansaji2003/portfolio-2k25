@@ -5,13 +5,21 @@ const Footer = () => {
     <footer className="footer">
       <div className="footer-container">
         <div className="flex flex-col justify-center">
+
           <p>Terms & Conditions</p>
         </div>
         <div className="socials">
           {socialImgs.map((socialImg, index) => (
-            <div key={index} className="icon">
-              <img src={socialImg.imgPath} alt="social icon" />
-            </div>
+            <a
+              key={index}
+              href={socialImg.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="icon"
+              aria-label={`Visit ${socialImg.name}`}
+            >
+              <img src={socialImg.imgPath} alt={`${socialImg.name} icon`} />
+            </a>
           ))}
         </div>
         <div className="flex flex-col justify-center">

@@ -11,7 +11,7 @@ const ContactExperience = () => {
 
     return {
       shadows: !isMobile && !isLowEnd,
-      camera: { position: [0, 5, 10] as [number, number, number], fov: 50 },
+      camera: { position: [5, 7, 5] as [number, number, number], fov: 50 },
       gl: {
         antialias: !isMobile,
         alpha: false, // keep opaque for dark background
@@ -26,13 +26,13 @@ const ContactExperience = () => {
     <Canvas {...canvasSettings} style={{ background: "#0a0a0a" }}>
       <Suspense fallback={null}>
         {/* Softer ambient light for a dark mood */}
-        <ambientLight intensity={0.4} color="#888" />
+        <ambientLight intensity={0.4} color="#ffffff" />
 
         {/* Cool bluish directional light for contrast */}
         <directionalLight
           position={[5, 5, 3]}
           intensity={3}
-          color="#88aaff"
+          color="#ffffff"
           castShadow={canvasSettings.shadows}
         />
 
@@ -41,7 +41,7 @@ const ContactExperience = () => {
           position={[-5, 10, 2]}
           castShadow={canvasSettings.shadows}
           intensity={3}
-          color="#ffcc88"
+          color="#ffffff"
         />
 
         <OrbitControls
@@ -53,20 +53,11 @@ const ContactExperience = () => {
           dampingFactor={0.05}
         />
 
-        {/* Dark matte platform */}
-        <group scale={[1, 1, 1]}>
-          {/* <mesh
-            receiveShadow={canvasSettings.shadows}
-            position={[0, -1.5, 0]}
-            rotation={[-Math.PI / 2, 0, 0]}
-          >
-            <planeGeometry args={[30, 30]} />
-            <meshStandardMaterial color="#1a1a1a" roughness={0.8} metalness={0.2} />
-          </mesh> */}
-        </group>
+    
+        
 
         {/* Model */}
-        <group scale={4} position={[0, 0, 0]} castShadow={canvasSettings.shadows}>
+        <group scale={3} position={[0, 0, 0]} castShadow={canvasSettings.shadows}>
           <WW1 />
         </group>
       </Suspense>

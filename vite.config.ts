@@ -11,19 +11,11 @@ export default defineConfig({
         manualChunks: {
           'three': ['three'],
           'react-three': ['@react-three/fiber', '@react-three/drei', '@react-three/postprocessing'],
-          'animations': ['gsap', '@gsap/react', 'framer-motion'],
-          'vendor': ['react', 'react-dom']
+          'animations': ['gsap', '@gsap/react', 'framer-motion']
         }
       }
     },
-    target: 'esnext',
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true
-      }
-    }
+    target: 'esnext'
   },
   optimizeDeps: {
     include: ['three', '@react-three/fiber', '@react-three/drei', 'gsap']
