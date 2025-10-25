@@ -43,9 +43,9 @@ const ReviewCard: FC<Review> = ({ img, name, username, body }) => {
 
 const Testimonial: FC = () => {
   return (
-    <div className="items-start mt-25 md:mt-35 c-space">
+    <div id="testimonials" className="items-start mt-25 md:mt-35 c-space">
       <TitleHeader
-        title="Hear From My Clients"
+        title="Some kind words"
         sub="💬 What people say about my work"
       />
       <div className="relative flex flex-col items-center justify-center w-full mt-12 overflow-hidden">

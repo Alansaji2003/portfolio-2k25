@@ -4,23 +4,38 @@ import emailjs from "@emailjs/browser";
 import TitleHeader from "../components/TitleHeader";
 import ContactExperience from "../components/models/contact/ContactExperience";
 
+
 const Contact = () => {
   const formRef = useRef<HTMLFormElement>(null);
   const [loading, setLoading] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [form, setForm] = useState({
     name: "",
     email: "",
     message: "",
+    title: "New Contact Form Submission", 
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+
     setForm({ ...form, [name]: value });
+
+    // Reset status when user starts typing again
+    if (submitStatus !== 'idle') {
+      setSubmitStatus('idle');
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true); // Show loading state
+    setLoading(true);
+
+    // Validate form data
+    if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
+      setLoading(false);
+      return;
+    }
 
     try {
       await emailjs.sendForm(
@@ -30,22 +45,34 @@ const Contact = () => {
         import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY
       );
 
-      // Reset form and stop loading
-      setForm({ name: "", email: "", message: "" });
+      // Reset form and show success
+      setForm({
+        name: "",
+        email: "",
+        message: "",
+        title: "New Contact Form Submission"
+      });
+      setSubmitStatus('success');
+
     } catch (error) {
-      console.error("EmailJS Error:", error); // Optional: show toast
+      console.error("Failed to send email:", error);
+      setSubmitStatus('error');
+
     } finally {
-      setLoading(false); // Always stop loading, even on error
+      setLoading(false);
     }
   };
 
   return (
-    <section id="contact" className="flex-center section-padding">
-      <div className="w-full h-full md:px-10 px-5">
+    <section id="contact" className="relative flex-center section-padding min-h-screen overflow-hidden">
+
+      <div className="relative z-50 w-full h-full md:px-10 px-5">
+
         <TitleHeader
           title="Get in Touch – Let’s Connect"
           sub="💬 Have questions or ideas? Let’s talk! 🚀"
         />
+
         <div className="grid-12-cols mt-16">
           <div className="xl:col-span-5">
             <div className="flex-center card-border rounded-xl p-10">
@@ -93,8 +120,24 @@ const Contact = () => {
                   />
                 </div>
 
-                <button type="submit">
-                  <div className="cta-button group">
+                {/* Hidden fields for EmailJS template */}
+                <input type="hidden" name="title" value={form.title} />
+                <input type="hidden" name="time" value={new Date().toLocaleString()} />
+
+                {submitStatus === 'success' && (
+                  <div className="text-green-500 text-center mb-4">
+                    ✅ Message sent successfully!
+                  </div>
+                )}
+
+                {submitStatus === 'error' && (
+                  <div className="text-red-500 text-center mb-4">
+                    ❌ Failed to send message. Check console for details.
+                  </div>
+                )}
+
+                <button type="submit" disabled={loading}>
+                  <div className={`cta-button group ${loading ? 'opacity-50' : ''}`}>
                     <div className="bg-circle" />
                     <p className="text">
                       {loading ? "Sending..." : "Send Message"}
@@ -114,6 +157,7 @@ const Contact = () => {
           </div>
         </div>
       </div>
+
     </section>
   );
 };

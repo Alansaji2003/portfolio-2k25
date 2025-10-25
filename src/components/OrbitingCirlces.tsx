@@ -20,7 +20,7 @@ export const OrbitingCircles: React.FC<OrbitingCirclesProps> = ({
   radius = 160,
   path = true,
   iconSize = 30,
-  speed = 1,
+  speed = 2,
   ...props
 }) => {
   const calculatedDuration = useMemo(() => duration / speed, [duration, speed]);

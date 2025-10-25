@@ -16,9 +16,9 @@ const About = () => {
         {/* Grid 1 - Main intro */}
         <div className="flex items-end p-6 bg-[#0E0E10] rounded-2xl md:col-span-4 lg:col-span-3 row-span-1 h-[15rem] md:h-full relative overflow-hidden hover:-translate-y-1 duration-200">
           <img
-            src="assets/coding-pov.png"
+            src="assets/alan.png"
             alt="Coding POV"
-            className="absolute scale-[1.75] -right-[5rem] -top-[1rem] md:scale-[3] md:left-50 md:inset-y-10 lg:scale-[2.5]"
+            className="absolute scale-[1] md:-right-[5rem] lg:-right-[5rem] -right-[5rem] -top-[1rem] md:scale-[1] md:left-50 md:inset-y-10 lg:scale-[1] lg:-top-[4rem] md:-top-[2rem]"
           />
           <div className="z-10">
             <p className="headtext">Hi, I'm Alan Saji</p>
@@ -33,12 +33,18 @@ const About = () => {
 
         {/* Grid 2 - CTA */}
         <div className="p-6 bg-[#0E0E10] rounded-2xl md:col-span-4 lg:col-span-3 row-span-1 h-[15rem] md:h-full relative overflow-hidden hover:-translate-y-1 duration-200">
+          <img
+            src="assets/coding-pov.png"
+            alt="Coding POV"
+            className="absolute scale-[1.75] -right-[5rem] -top-[1rem] md:scale-[3] md:left-50 md:inset-y-10 lg:scale-[2.5]"
+          />
           <div className="flex flex-col items-center justify-center gap-4 size-full">
-            <p className="text-center headtext">
+            <p className="z-10 text-center headtext">
               Do you want to start a project together?
             </p>
             <CopyEmailButton />
           </div>
+
         </div>
 
         {/* Grid 3 - Tech Stack */}
@@ -50,7 +56,7 @@ const About = () => {
               allow me to build robust and scalable applications.
             </p>
           </div>
-          <div className="absolute top-45 bottom-0 md:inset-y-9 w-full h-full lg:start-[50%] md:scale-125 z-0">
+          <div className="absolute md:top-40 top-45 bottom-0 md:inset-y-9 w-full h-full lg:start-[50%] md:scale-125 z-0">
             <Frameworks />
           </div>
         </div>

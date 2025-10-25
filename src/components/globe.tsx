@@ -60,7 +60,7 @@ export function Globe({ className, config }: GlobeProps) {
   const pointerInteracting = useRef<number | null>(null);
   const pointerMovement = useRef(0);
   const isVisible = useRef(true);
-  const animationSpeed = useRef(0.005);
+  const animationSpeed = useRef(0.015);
 
   // ✅ Only run config generator client-side
   const optimizedConfig = useMemo(() => {

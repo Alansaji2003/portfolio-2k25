@@ -1,4 +1,4 @@
-import { Suspense, lazy, useRef, useEffect, useState } from "react";
+import { Suspense, useRef, useEffect, useState } from "react";
 
 interface LazyCanvasProps {
   children: React.ReactNode;

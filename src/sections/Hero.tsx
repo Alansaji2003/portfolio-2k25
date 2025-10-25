@@ -67,7 +67,7 @@ const Hero = () => {
           <div className="flex flex-col gap-7">
             <div className="hero-text">
               <h1>
-                Shaping
+                Transforming
                 <span className="slide">
                   <span className="wrapper">
                     {(Array.isArray(words) ? words : []).map((word, index) => (
@@ -87,12 +87,12 @@ const Hero = () => {
                   </span>
                 </span>
               </h1>
-              <h1>into Real Projects</h1>
-              <h1>that Deliver Results</h1>
+              <h1>into Real Solutions</h1>
+              <h1>that Delivers Results.</h1>
             </div>
 
             <p className="text-white-50 md:text-xl relative z-10 pointer-events-none">
-              Hi, I’m Alan, a developer based in India with a passion for code.
+              Hello 🙂, I am Alan, a developer based in India with a passion for code.
             </p>
 
             <Button
@@ -130,7 +130,7 @@ const Hero = () => {
           }),
           // Desktop: right side, vertically centered, larger
           ...(isClient && !(isMobile || fallbackMobile) && !(isTablet || fallbackTablet) && {
-            right: "3rem",
+            right: "6rem",
             top: "50%",
             transform: "translateY(-50%)",
             width: "600px",
