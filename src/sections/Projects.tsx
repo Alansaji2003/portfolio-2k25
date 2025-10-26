@@ -78,7 +78,7 @@ const Projects = () => {
                     {/* View All Projects Button */}
                     <div className="mt-12 text-center ">
                         <a href="/projects" className="inline-block">
-                            <div className="cta-button group w-60">
+                            <div className="cta-button group w-60 lg:w-80">
                                 <div className="bg-circle" />
                                 <p className="text">All Projects</p>
                                 <div className="arrow-wrapper">

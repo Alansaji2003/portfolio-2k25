@@ -27,6 +27,17 @@ const About = () => {
               development skills to deliver dynamic software and web
               applications.
             </p>
+                                <div className="mt-5">
+                        <a href="/Resume.pdf" className="inline-block">
+                            <div className="cta-button group w-60 lg:w-80">
+                                <div className="bg-circle" />
+                                <p className="text">Download Resume</p>
+                                <div className="arrow-wrapper">
+                                    <img src="/images/arrow-down.svg" alt="arrow" />
+                                </div>
+                            </div>
+                        </a>
+                    </div>
           </div>
           <div className="absolute inset-x-0 pointer-events-none -bottom-4 h-1/2 sm:h-1/3 bg-gradient-to-t from-indigo" />
         </div>
