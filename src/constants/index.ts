@@ -172,7 +172,7 @@ const expCards = [
   },
   {
     review: "Coming soon....",
-    imgPath: "/images/exp3.jpg",
+    imgPath: "/images/exp3.png",
     logoPath: "/images/logo3.png",
     title: "University of Technology Sydney",
     date: "Feb 2026",
