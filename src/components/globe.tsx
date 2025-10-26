@@ -61,6 +61,7 @@ export function Globe({ className, config }: GlobeProps) {
   const pointerMovement = useRef(0);
   const isVisible = useRef(true);
   const animationSpeed = useRef(0.015);
+  const isTouchInteracting = useRef(false);
 
   // ✅ Only run config generator client-side
   const optimizedConfig = useMemo(() => {
@@ -175,18 +176,61 @@ export function Globe({ className, config }: GlobeProps) {
           isReady && "opacity-100"
         )}
         onPointerDown={(e) => {
-          pointerInteracting.current = e.clientX;
-          updatePointerInteraction(e.clientX);
-          gsap.killTweensOf(rotation);
+          e.preventDefault();
+          if (e.pointerType !== 'touch') {
+            pointerInteracting.current = e.clientX;
+            updatePointerInteraction(e.clientX);
+            gsap.killTweensOf(rotation);
+          }
         }}
-        onPointerUp={() => {
+        onPointerUp={(e) => {
+          if (e.pointerType !== 'touch') {
+            updatePointerInteraction(null);
+            releaseInertia(pointerMovement.current);
+            pointerMovement.current = 0;
+          }
+        }}
+        onPointerOut={(e) => {
+          // Only reset on pointer out if it's not a touch interaction
+          if (e.pointerType !== 'touch' && !isTouchInteracting.current) {
+            updatePointerInteraction(null);
+          }
+        }}
+        onPointerMove={(e) => {
+          e.preventDefault();
+          if (e.pointerType !== 'touch') {
+            updateMovement(e.clientX);
+          }
+        }}
+        onMouseMove={(e) => {
+          if (!isTouchInteracting.current) {
+            updateMovement(e.clientX);
+          }
+        }}
+        onTouchStart={(e) => {
+          e.preventDefault();
+          isTouchInteracting.current = true;
+          const touch = e.touches[0];
+          if (touch) {
+            pointerInteracting.current = touch.clientX;
+            updatePointerInteraction(touch.clientX);
+            gsap.killTweensOf(rotation);
+          }
+        }}
+        onTouchMove={(e) => {
+          e.preventDefault();
+          const touch = e.touches[0];
+          if (touch && isTouchInteracting.current) {
+            updateMovement(touch.clientX);
+          }
+        }}
+        onTouchEnd={(e) => {
+          e.preventDefault();
+          isTouchInteracting.current = false;
           updatePointerInteraction(null);
           releaseInertia(pointerMovement.current);
           pointerMovement.current = 0;
         }}
-        onPointerOut={() => updatePointerInteraction(null)}
-        onMouseMove={(e) => updateMovement(e.clientX)}
-        onTouchMove={(e) => e.touches[0] && updateMovement(e.touches[0].clientX)}
       />
     </div>
   );
