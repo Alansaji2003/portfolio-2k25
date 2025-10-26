@@ -31,7 +31,7 @@ const About = () => {
                         <a href="/Resume.pdf" className="inline-block">
                             <div className="cta-button group w-60 lg:w-80">
                                 <div className="bg-circle" />
-                                <p className="text">Download Resume</p>
+                                <p className="text">View Resume</p>
                                 <div className="arrow-wrapper">
                                     <img src="/images/arrow-down.svg" alt="arrow" />
                                 </div>
