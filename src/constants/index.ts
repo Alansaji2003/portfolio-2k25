@@ -159,7 +159,7 @@ const expCards = [
     ],
   },
   {
-    review: "Certificate given to Alan Saji for successfully completing intership as Web Development Inter at Unified Mentor Pvt Ltd. During the internship, we found him consistant and hardworking.",
+    review: "Certificate given to Alan Saji for successfully completing internship as Web Development Inter at Unified Mentor Pvt Ltd. During the internship, we found him consistant and hardworking.",
     imgPath: "/images/exp2.png",
     logoPath: "/images/logo2.png",
     title: "Web Development Intern",

@@ -13,7 +13,7 @@ const SpaceBackground: React.FC = () => {
     // Reduce star count based on device performance
     const isMobile = window.innerWidth < 768;
     const isLowEnd = navigator.hardwareConcurrency <= 4;
-    const starCount = isMobile ? 500 : isLowEnd ? 800 : 1500;
+    const starCount = isMobile ? 700 : isLowEnd ? 800 : 1500;
 
     // === Scene Setup ===
     const scene = new THREE.Scene();
