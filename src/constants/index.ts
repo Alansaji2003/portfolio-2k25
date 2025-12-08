@@ -350,7 +350,7 @@ export const projects: Project[] = [
   {
     id: 32,
     title: "Silver.AI - An AI Website Builder",
-    description: "Automated Website builder with just a prompt, using state of the art agentic AI.",
+    description: "Automated Website builder working with just a prompt, using state of the art agentic AI.",
     technologies: ["Nextjs16", "TypeScript", "Inngest", "e2b", "Postgres", "Prisma"],
     image: "/assets/img/proj32.jpg",
     liveUrl: "https://silver-website-builder.vercel.app",
