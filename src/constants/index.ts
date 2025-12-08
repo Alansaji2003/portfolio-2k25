@@ -348,6 +348,16 @@ export const skills = [
 
 export const projects: Project[] = [
   {
+    id: 32,
+    title: "Silver.AI - An AI Website Builder",
+    description: "Automated Website builder with just a prompt, using state of the art agentic AI.",
+    technologies: ["Nextjs16", "TypeScript", "Inngest", "e2b", "Postgres", "Prisma"],
+    image: "/assets/img/proj32.jpg",
+    liveUrl: "https://silver-website-builder.vercel.app",
+    githubUrl: "https://github.com/Alansaji2003/Silver-Website-Builder",
+  },
+ 
+  {
     id: 1,
     title: "MindMate – AI-Powered Real-Time Support Platform",
     description: "AI-powered platform providing real-time mental health support.",
@@ -626,6 +636,7 @@ export const projects: Project[] = [
     liveUrl: "",
     githubUrl: "https://github.com/Alansaji2003/100-days-of-code",
   },
+  
 ];
 
 export {
