@@ -3,7 +3,7 @@ import { gsap } from "gsap";
 
 const CopyEmailButton = () => {
   const [copied, setCopied] = useState(false);
-  const email = "Your Email Address";
+  const email = "asaji6792@gmail.com";
   const buttonRef = useRef<HTMLButtonElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
 
